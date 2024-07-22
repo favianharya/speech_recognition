@@ -8,6 +8,9 @@ from langdetect import detect
 import re
 import torch
 
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
 import time
 
 
