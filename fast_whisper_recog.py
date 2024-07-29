@@ -138,5 +138,11 @@ def main():
 
         st.text_area("Summary:", summary_tr, height=200)
 
+        if os.path.exists(audio_file_path):
+            os.remove(audio_file_path)
+            print(f"The file {audio_file_path} has been deleted.")
+        else:
+            print(f"The file {audio_file_path} does not exist.")
+
 if __name__ == "__main__":
     main()
