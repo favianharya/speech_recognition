@@ -26,7 +26,7 @@ def load_model(type:str):
     """
     return WhisperModel(type, device="cpu", compute_type="int8")
 
-def transcribe_model(file_path:str) -> str:
+def transcribe_model(file_path:str, type:str) -> str:
     """
     Transcribe text from speech.
 
@@ -36,7 +36,7 @@ def transcribe_model(file_path:str) -> str:
     Returns:
         str: joined str fron the transcribe speech.
     """
-    model = load_model("medium.en")
+    model = load_model(type)
     segments, info = model.transcribe(file_path, beam_size=5, temperature=0.2)
 
     print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
@@ -59,8 +59,8 @@ def summarize_text(text:str) -> str:
         str: summarize text
     """
     summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-    max_length = 200
-    min_length = max_length // 4
+    max_length = len(text) // 5  # Use integer division to ensure max_length is an integer
+    min_length = max_length // 4  # Use integer division to ensure min_length is an integer
 
     summary = summarizer(text, max_length=max_length, min_length=min_length, do_sample=False)
     summary_text = summary[0]['summary_text'] 
@@ -113,6 +113,7 @@ def translate_conversation(text: str)-> str:
 def main():
 
     st.title('Speech to Text Application')
+    model = st.selectbox("Choose translation language", ["medium", "medium.en", "small", "small.en", "base", "base.en", "tiny.en", "tiny"])
     uploaded_file = st.file_uploader("Choose an audio file", type="wav")
     if uploaded_file is not None:
         audio_file_path = f"temp_audio.wav"
@@ -125,7 +126,7 @@ def main():
         my_bar = st.progress(0, text=progress_text)
 
         my_bar.progress(10, text="Transcribing audio...")
-        recognized_text = transcribe_model(audio_file_path)
+        recognized_text = transcribe_model(audio_file_path, model)
 
         st.write("Recognized Text:", recognized_text)
 
