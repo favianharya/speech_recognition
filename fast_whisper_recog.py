@@ -113,7 +113,7 @@ def translate_conversation(text: str)-> str:
 def main():
 
     st.title('Speech to Text Application')
-    model = st.selectbox("Choose translation language", ["medium", "medium.en", "small", "small.en", "base", "base.en", "tiny.en", "tiny"])
+    model = st.selectbox("Choose model type", ["medium", "medium.en", "small", "small.en", "base", "base.en", "tiny.en", "tiny"])
     uploaded_file = st.file_uploader("Choose an audio file", type="wav")
     if uploaded_file is not None:
         audio_file_path = f"temp_audio.wav"
