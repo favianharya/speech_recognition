@@ -128,7 +128,7 @@ def main():
         my_bar.progress(10, text="Transcribing audio...")
         recognized_text = transcribe_model(audio_file_path, model)
 
-        st.write("Recognized Text:", recognized_text)
+        st.text_area("Recognized Text:", recognized_text, height=200)
 
         my_bar.progress(60, text="Translating summary...")
         summary = summarize_text(recognized_text)
