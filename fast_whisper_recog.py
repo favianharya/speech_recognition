@@ -39,11 +39,11 @@ def transcribe_model(file_path:str, type:str) -> str:
     model = load_model(type)
     segments, info = model.transcribe(file_path, beam_size=5, temperature=0.2)
 
-    print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
+    st.write("Detected language '%s' with probability %f" % (info.language, info.language_probability))
 
     text = []
     for segment in segments:
-        print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
+        st.write("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
         text.append(segment.text)
     
     return ''.join(text)
