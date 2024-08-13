@@ -2,6 +2,16 @@ import yt_dlp
 import os
 
 def download_youtube_video_as_mp3(youtube_url, output_path):
+    """
+    Download the audio from youtube.
+
+    Args:
+        youtube_url (str): youtube's video URL.
+        output_path (str): path for output to be save.
+
+    Returns:
+        Audio: Audio from youtube's video.
+    """
     try:
         ydl_opts = {
             'format': 'bestaudio/best',
@@ -21,6 +31,17 @@ def download_youtube_video_as_mp3(youtube_url, output_path):
         print(f"Failed to download {youtube_url}: {e}")
 
 def download_mp3_from_file(file_path, output_path):
+    """
+    To read TXT file filled with youtube's URL and download it with 
+    download_youtube_video_as_mp3()
+
+    Args:
+        file_path (str): TXT's path.
+        output_path (str): path for output to be save.
+
+    Returns:
+        Audio: Audio from youtube's video.
+    """
     with open(file_path, 'r') as file:
         urls = file.readlines()
 
@@ -29,5 +50,8 @@ def download_mp3_from_file(file_path, output_path):
         if url:  # Check if the line is not empty
             download_youtube_video_as_mp3(url, output_path)
 
-# Example usage
-download_mp3_from_file("/Users/t-favian.adrian/Documents/speech_recognition/youtube_links.txt", "/Users/t-favian.adrian/Documents/speech_recognition/output")
+def main():
+    download_mp3_from_file("/Users/t-favian.adrian/Documents/speech_recognition/youtube_links.txt", "/Users/t-favian.adrian/Documents/speech_recognition/output")
+
+if __name__ == "__main__":
+    main()
