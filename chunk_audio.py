@@ -9,12 +9,15 @@ def chunk_audio(file_path, output_folder):
     # Load the audio file
     audio = AudioSegment.from_file(file_path)
 
-    chunk_length_ms = 100000 
+    chunk_length_ms =  30000 # 1000 = 1ms
+
+    audio_length_ms = len(audio)
 
     base_filename = to_camel_case(os.path.splitext(os.path.basename(file_path))[0])
 
     # Calculate the number of chunks
-    num_chunks = len(audio) // chunk_length_ms
+    num_chunks = audio_length_ms // chunk_length_ms
+    remainder_ms = audio_length_ms % chunk_length_ms
 
     # Create output directory if it doesn't exist
     os.makedirs(output_folder, exist_ok=True)
@@ -25,6 +28,10 @@ def chunk_audio(file_path, output_folder):
     # Export chunks to the new folder
     for i, chunk in enumerate(chunks):
         chunk.export(os.path.join(output_folder, f"{base_filename}_chunk_{i}.mp3"), format="mp3")
+        
+    if remainder_ms > 0:
+        remainder_chunk = audio[num_chunks * chunk_length_ms:]
+        remainder_chunk.export(os.path.join(output_folder, f"{base_filename}_chunk_{num_chunks}.mp3"), format="mp3")
 
 def process_all_audios(input_folder, output_folder):
     # Ensure output folder exists

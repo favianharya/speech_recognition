@@ -51,7 +51,7 @@ def download_mp3_from_file(file_path, output_path):
             download_youtube_video_as_mp3(url, output_path)
 
 def main():
-    download_mp3_from_file("/Users/t-favian.adrian/Documents/speech_recognition/youtube_links.txt", "/Users/t-favian.adrian/Documents/speech_recognition/output")
+    download_mp3_from_file("/Users/t-favian.adrian/Documents/speech_recognition/youtube_links.txt", "/Users/t-favian.adrian/Documents/speech_recognition/audio_raw")
 
 if __name__ == "__main__":
     main()
