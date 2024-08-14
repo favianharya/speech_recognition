@@ -35,6 +35,18 @@ The pipeline consists of three main stages:
    - The summarized text is translated into the desired language.
    - The final translated text is produced for further use.
 
+## How to download Youtube's Audio
+
+1. Put youtube's URL in ```youtube_links.txt```
+2. Run the script in terminal ```python download_youtube.py```
+3. The audio file will appear in folder ```audio_raw```
+
+## How to chunk Youtube's Audio
+
+1. Specify the ```chunk_length_ms``` (1000 = 1s) in ```chunk_audio.py```
+2. Run the script in terminal ```python chunk_audio.py```
+3. The raw audio file in ```audio_raw``` will automatically chunk and appear in ```output_chunk``` folder
+
 ## Authors
 
 This project was developed by the following students from the Data Science program at Binus University:

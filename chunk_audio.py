@@ -9,8 +9,7 @@ def chunk_audio(file_path, output_folder):
     # Load the audio file
     audio = AudioSegment.from_file(file_path)
 
-    chunk_length_ms =  30000 # 1000 = 1ms
-
+    chunk_length_ms =  30000 # 1000 = 1s
     audio_length_ms = len(audio)
 
     base_filename = to_camel_case(os.path.splitext(os.path.basename(file_path))[0])
