@@ -50,6 +50,4 @@ def process_all_audios(input_folder, output_folder):
             chunk_audio(file_path, audio_output_folder)
 
 # Example usage
-input_folder = "/Users/t-favian.adrian/Documents/speech_recognition/audio_raw"        
-output_folder = "/Users/t-favian.adrian/Documents/speech_recognition/output_chunk"  
-process_all_audios(input_folder, output_folder)
+process_all_audios("audio_raw", "output_chunk"  )
