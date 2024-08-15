@@ -1,9 +1,19 @@
 import os
 from pydub import AudioSegment
+import re
 
-def to_camel_case(s):
-    parts = s.split()
-    return parts[0].lower() + ''.join(word.capitalize() for word in parts[1:])
+def format_filename(input_string, chunk_number=0):
+    # Remove leading and trailing whitespace
+    input_string = input_string.strip()
+    # Replace special characters with underscores
+    formatted_string = re.sub(r'[^a-zA-Z0-9\s]', '_', input_string)
+    # Replace multiple spaces or underscores with a single underscore
+    formatted_string = re.sub(r'[\s_]+', '_', formatted_string)
+    # Convert the string to lowercase
+    formatted_string = formatted_string.lower()
+    # Append the chunk identifier
+    formatted_string += f'_chunk_{chunk_number}'
+    return formatted_string
 
 def chunk_audio(file_path, output_folder):
     # Load the audio file
@@ -12,7 +22,7 @@ def chunk_audio(file_path, output_folder):
     chunk_length_ms =  30000 # 1000 = 1s
     audio_length_ms = len(audio)
 
-    base_filename = to_camel_case(os.path.splitext(os.path.basename(file_path))[0])
+    base_filename = format_filename(os.path.splitext(os.path.basename(file_path))[0])
 
     # Calculate the number of chunks
     num_chunks = audio_length_ms // chunk_length_ms
@@ -26,11 +36,11 @@ def chunk_audio(file_path, output_folder):
 
     # Export chunks to the new folder
     for i, chunk in enumerate(chunks):
-        chunk.export(os.path.join(output_folder, f"{base_filename}_chunk_{i}.mp3"), format="mp3")
+        chunk.export(os.path.join(output_folder, f"{base_filename}_chunk_{i}.wav"), format="wav")
         
     if remainder_ms > 0:
         remainder_chunk = audio[num_chunks * chunk_length_ms:]
-        remainder_chunk.export(os.path.join(output_folder, f"{base_filename}_chunk_{num_chunks}.mp3"), format="mp3")
+        remainder_chunk.export(os.path.join(output_folder, f"{base_filename}_chunk_{num_chunks}.wav"), format="wav")
 
 def process_all_audios(input_folder, output_folder):
     # Ensure output folder exists
@@ -38,7 +48,7 @@ def process_all_audios(input_folder, output_folder):
 
     # Process each audio file in the input folder
     for filename in os.listdir(input_folder):
-        if filename.endswith(".mp3"):  # Modify if you have other audio formats
+        if filename.endswith(".wav"):  # Modify if you have other audio formats
             file_path = os.path.join(input_folder, filename)
 
             # Create a folder for the current audio's chunks
@@ -50,4 +60,4 @@ def process_all_audios(input_folder, output_folder):
             chunk_audio(file_path, audio_output_folder)
 
 # Example usage
-process_all_audios("audio_raw", "output_chunk"  )
+process_all_audios("audio_raw", "/Users/t-favian.adrian/Documents/speech_recognition/src/output_chunk" )
