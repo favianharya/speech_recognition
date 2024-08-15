@@ -8,6 +8,9 @@ from langdetect import detect
 import re
 import torch
 
+from script.download import download_youtube_video_as_mp3
+from script.eval_summ import rouge_eval
+
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
@@ -68,60 +71,23 @@ def summarize_text(text:str) -> str:
     # summary_text = re.sub(r'([.!?])', r'\1\n', summary_text)
     return summary_text
 
-def translate_text(text: str, tgt_lang: str, temperature: float, top_k: int, top_p: float) -> str:
-    """
-    Translates text from the source language to the target language using a pre-trained model.
-
-    Args:
-        text (str): The text to translate.
-        src_lang (str): The source language code (e.g., 'en' for English).
-        tgt_lang (str): The target language code (e.g., 'fr' for French).
-
-    Returns:
-        str: The translated text.
-    """
-    # Find src_lang
-    src_lang = detect(text)
-
-    # Load the tokenizer and model
-    model_name = f'Helsinki-NLP/opus-mt-{src_lang}-{tgt_lang}'
-    tokenizer = MarianTokenizer.from_pretrained(model_name)
-    model = MarianMTModel.from_pretrained(model_name)
-
-    # Tokenize the input text
-    input_ids = tokenizer(text, return_tensors="pt").input_ids
-
-    # Generate the translation
-    translated = model.generate(input_ids, max_length=300, num_return_sequences=1, temperature=temperature, top_k=top_k, top_p=top_p)
-
-    # Decode the translated tokens and return the result
-    tgt_text = tokenizer.decode(translated[0], skip_special_tokens=True)
-    return tgt_text
-
-def translate_conversation(text: str)-> str:
-    lines = text.strip().split('\n')
-    translated_lines = []
-
-    for line in lines:
-        translated_text = translate_text(line, tgt_lang='id', temperature=0.7, top_k=30, top_p=0.70)
-        translated_lines.append(translated_text)
-
-    translated_conversation = '\n'.join(translated_lines)
-    return translated_conversation.replace('\n', ' ')
-
-
 def main():
 
     st.title('Speech to Text Application')
-    model = st.selectbox("Choose model type", ["medium", "medium.en", "small", "small.en", "base", "base.en", "tiny.en", "tiny"])
-    uploaded_file = st.file_uploader("Choose an audio file", type="wav")
-    if uploaded_file is not None:
-        audio_file_path = f"temp_audio.wav"
-        with open(audio_file_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
+    model = st.selectbox("Choose model type", ["large","medium", "medium.en", "small", "small.en", "base", "base.en", "tiny.en", "tiny"])
+ 
+    url = st.text_input("Enter the YouTube video URL:")
+    download_path = "audio_temp/audio"
 
-        st.audio(uploaded_file, format='audio/wav')
-    
+    if url:
+        file_path = download_youtube_video_as_mp3(url, download_path)
+
+    # Check if the file was downloaded and exists
+    if os.path.exists("audio_temp/audio.wav"):
+        st.audio("audio_temp/audio.wav", format="audio/wav")
+
+        audio_file_path = "audio_temp/audio.wav"
+
         progress_text = "Operation in progress. Please wait."
         my_bar = st.progress(0, text=progress_text)
 
@@ -130,13 +96,15 @@ def main():
 
         st.text_area("Recognized Text:", recognized_text, height=200)
 
-        my_bar.progress(60, text="Translating summary...")
+        my_bar.progress(60, text="summarize...")
         summary = summarize_text(recognized_text)
 
-        my_bar.progress(100, text="Operation complete.")
-        summary_tr=translate_conversation(summary)
+        my_bar.progress(80, text="Summarization result...")
+        st.text_area("Summary:", summary, height=200)
 
-        st.text_area("Summary:", summary_tr, height=200)
+        my_bar.progress(100, text="Operation complete...")
+        eval = rouge_eval(summary, recognized_text)
+        st.text_area("Evaluation Result:", eval, height=100)
 
         if os.path.exists(audio_file_path):
             os.remove(audio_file_path)

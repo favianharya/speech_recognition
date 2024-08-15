@@ -17,7 +17,7 @@ def download_youtube_video_as_mp3(youtube_url, output_path):
             'format': 'bestaudio/best',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
+                'preferredcodec': 'wav',
                 'preferredquality': '192',
             }],
             'outtmpl': os.path.join(output_path, '%(title)s.%(ext)s'),
@@ -25,7 +25,7 @@ def download_youtube_video_as_mp3(youtube_url, output_path):
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([youtube_url])
-            print(f"Downloaded and converted to MP3: {youtube_url}")
+            print(f"Downloaded and converted to wav: {youtube_url}")
 
     except Exception as e:
         print(f"Failed to download {youtube_url}: {e}")
