@@ -1,8 +1,5 @@
 # Ignore virtual environment
 venv/
-audio_raw/
-output_chunk/
-youtube_link.txt/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
