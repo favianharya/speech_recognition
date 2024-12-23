@@ -5,7 +5,7 @@ from tqdm import tqdm  # Import tqdm for the progress bar
 model = WhisperModel("medium", device="cpu", compute_type="int8")
 
 # Transcribe the audio file
-segments, info = model.transcribe("/Users/t-favian.adrian/Documents/data_science_project/speech-to-text/Speaker26_000.wav", beam_size=5, temperature=0.2)
+segments, info = model.transcribe("src/audio_raw/the_federal_funds_rate_explained_in_one_minute_federal_reserve_interest_rate_superpower_or_threat__chunk_0.wav", beam_size=5, temperature=0.2)
 
 print("Detected language '%s' with probability %f" % (info.language, info.language_probability))
 

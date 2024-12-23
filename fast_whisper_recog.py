@@ -7,6 +7,7 @@ from transformers import MarianMTModel, MarianTokenizer
 from langdetect import detect
 import re
 import torch
+import sentencepiece
 
 from script.download import download_youtube_video_as_mp3
 from script.eval_summ import rouge_eval
@@ -61,7 +62,12 @@ def summarize_text(text:str) -> str:
     Returns:
         str: summarize text
     """
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+    summarizer = pipeline(
+            "summarization",
+            model="facebook/mbart-large-50",
+            tokenizer="facebook/mbart-large-50",
+            use_fast=False
+        )
     max_length = len(text) // 5  # Use integer division to ensure max_length is an integer
     min_length = max_length // 4  # Use integer division to ensure min_length is an integer
 
