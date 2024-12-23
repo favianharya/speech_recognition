@@ -2,7 +2,7 @@ import nltk
 from rouge_score import rouge_scorer, scoring
 from nltk.tokenize import sent_tokenize, word_tokenize
 
-nltk.download('punkt')
+nltk.download('punkt_tab')
 
 def rouge_eval(summary, original_text):
 
