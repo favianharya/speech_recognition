@@ -24,8 +24,9 @@ def download_youtube_video_as_mp3(youtube_url, output_path):
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.cache.remove()
             ydl.download([youtube_url])
             print(f"Downloaded and converted to wav: {youtube_url}")
 
-    except Exception as e:
-        print(f"Failed to download {youtube_url}: {e}")
+    except yt_dlp.DownloadError as error:
+        pass

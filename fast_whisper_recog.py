@@ -95,14 +95,14 @@ def main():
 
 
 
-    with st.expander("Criterias", expanded=True):
+    with st.expander("Criterias", expanded=False):
 
         model = st.selectbox("Choose model type", ["large","medium", "medium.en", "small", "small.en", "base", "base.en", "tiny.en", "tiny"])
         url = st.text_input("Enter the YouTube video URL")
 
         download_path = "audio_temp/audio"
         try:
-            if st.button('Generate Summarization', icon="🚀", type="primary"):
+            if st.button('Generate Extraction', icon="🚀", type="primary"):
                 with st.spinner():
                     if 'https://youtu.be/' in url:
                         test = download_youtube_video_as_mp3(url, download_path)
