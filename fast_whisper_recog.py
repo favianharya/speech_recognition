@@ -77,46 +77,74 @@ def summarize_text(text:str) -> str:
     # summary_text = re.sub(r'([.!?])', r'\1\n', summary_text)
     return summary_text
 
+test = 0
+
 def main():
 
-    st.title('Speech to Text Application')
-    model = st.selectbox("Choose model type", ["large","medium", "medium.en", "small", "small.en", "base", "base.en", "tiny.en", "tiny"])
- 
-    url = st.text_input("Enter the YouTube video URL:")
-    download_path = "audio_temp/audio"
+    hide_decoration_bar_style = '''<style>header {visibility: hidden;}</style>'''
+    st.markdown(hide_decoration_bar_style, unsafe_allow_html=True)
+    # Design hide "made with streamlit" footer menu area
+    hide_streamlit_footer = """
+    <style>#MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}</style>
+    """
+    st.markdown(hide_streamlit_footer, unsafe_allow_html=True)
 
-    if url:
-        file_path = download_youtube_video_as_mp3(url, download_path)
+    st.title("📺 YouTube video content extraction")
+    st.markdown('🚀 **Welcome to the YouTube Video Content Extraction** 📹✨ – Unlock insights from videos like never before! 🔍')
 
-    # Check if the file was downloaded and exists
-    if os.path.exists("audio_temp/audio.wav"):
-        st.audio("audio_temp/audio.wav", format="audio/wav")
 
-        audio_file_path = "audio_temp/audio.wav"
 
-        progress_text = "Operation in progress. Please wait."
-        my_bar = st.progress(0, text=progress_text)
+    with st.expander("Criterias", expanded=True):
 
-        my_bar.progress(10, text="Transcribing audio...")
-        recognized_text = transcribe_model(audio_file_path, model)
+        model = st.selectbox("Choose model type", ["large","medium", "medium.en", "small", "small.en", "base", "base.en", "tiny.en", "tiny"])
+        url = st.text_input("Enter the YouTube video URL")
 
-        st.text_area("Recognized Text:", recognized_text, height=200)
+        download_path = "audio_temp/audio"
+        try:
+            if st.button('Generate Summarization', icon="🚀", type="primary"):
+                with st.spinner():
+                    if 'https://youtu.be/' in url:
+                        test = download_youtube_video_as_mp3(url, download_path)
+                    else:
+                        raise ValueError("String must input url")
 
-        my_bar.progress(60, text="summarize...")
-        summary = summarize_text(recognized_text)
+                    st.video(url) 
 
-        my_bar.progress(80, text="Summarization result...")
-        st.text_area("Summary:", summary, height=200)
+                    # Check if the file was downloaded and exists
+                    if os.path.exists("audio_temp/audio.wav"):
+                        st.audio("audio_temp/audio.wav", format="audio/wav")
 
-        my_bar.progress(100, text="Operation complete...")
-        eval = rouge_eval(summary, recognized_text)
-        st.text_area("Evaluation Result:", eval, height=100)
+                        audio_file_path = "audio_temp/audio.wav"
 
-        if os.path.exists(audio_file_path):
-            os.remove(audio_file_path)
-            print(f"The file {audio_file_path} has been deleted.")
-        else:
-            print(f"The file {audio_file_path} does not exist.")
+                        progress_text = "Operation in progress. Please wait."
+                        my_bar = st.progress(0, text=progress_text)
+
+                        my_bar.progress(10, text="Transcribing audio...")
+                        recognized_text = transcribe_model(audio_file_path, model)
+
+                        st.text_area("Recognized Text:", recognized_text, height=200)
+
+                        my_bar.progress(60, text="summarize...")
+                        summary = summarize_text(recognized_text)
+
+                        my_bar.progress(80, text="Summarization result...")
+                        st.text_area("Summary:", summary, height=200)
+
+                        my_bar.progress(100, text="Operation complete...")
+                        eval = rouge_eval(summary, recognized_text)
+                        st.text_area("Evaluation Result:", eval, height=100)
+                    else:
+                        raise ValueError("unable to download video data")
+
+                    if os.path.exists(audio_file_path):
+                        os.remove(audio_file_path)
+                        print(f"The file {audio_file_path} has been deleted.")
+                    else:
+                        print(f"The file {audio_file_path} does not exist.")
+
+        except Exception as e:
+                st.error(f"An error occured: {e}", icon="🚨")           
 
 if __name__ == "__main__":
     main()
