@@ -18,4 +18,4 @@ def rouge_eval(summary, original_text):
 
     result = aggregator.aggregate()
 
-    return result['rouge1'].mid
+    return result['rougeL'].mid

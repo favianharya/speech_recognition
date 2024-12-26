@@ -64,8 +64,8 @@ def summarize_text(text:str) -> str:
     """
     summarizer = pipeline(
             "summarization",
-            model="facebook/mbart-large-50",
-            tokenizer="facebook/mbart-large-50",
+            model="google/pegasus-xsum",
+            tokenizer="google/pegasus-xsum",
             use_fast=False
         )
     max_length = len(text) // 5  # Use integer division to ensure max_length is an integer
