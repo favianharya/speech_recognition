@@ -1,0 +1,11 @@
+[server]
+headless = true
+enableCORS = false
+port = 8501
+serverAddress = "0.0.0.0"
+gatherUsageStats = true
+serverPort = 851
+
+[theme]
+base = "light"
+primaryColor = "#9d03fc" # custom purple
