@@ -167,3 +167,4 @@ cython_debug/
 # Custom project directories
 src/audio_raw/
 audio_temp
+*.csv
